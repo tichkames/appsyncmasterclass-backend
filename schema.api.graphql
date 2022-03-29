@@ -58,6 +58,7 @@ interface IProfile {
     backgroundImageUrl: AWSURL
     bio: String
     location: String
+    website: AWSURL
     birthdate: AWSDate
     createdAt: AWSDateTime!
     tweets: TweetsPage!
@@ -75,6 +76,7 @@ type MyProfile implements IProfile {
     backgroundImageUrl: AWSURL
     bio: String
     location: String
+    website: AWSURL
     birthdate: AWSDate
     createdAt: AWSDateTime!
     tweets: TweetsPage!
@@ -92,6 +94,7 @@ type OtherProfile  implements IProfile {
     backgroundImageUrl: AWSURL
     bio: String
     location: String
+    website: AWSURL
     birthdate: AWSDate
     createdAt: AWSDateTime!
     tweets: TweetsPage!

@@ -40,52 +40,52 @@ const an_appsync_context = (identity, args, result, source, info, prev) => {
   }
 }
 
-// const an_authenticated_user = async () => {
-//   const { name, email, password } = a_random_user()
+const an_authenticated_user = async () => {
+  const { name, email, password } = a_random_user()
 
-//   const cognito = new AWS.CognitoIdentityServiceProvider()
+  const cognito = new AWS.CognitoIdentityServiceProvider()
 
-//   const userPoolId = process.env.COGNITO_USER_POOL_ID
-//   const clientId = process.env.WEB_COGNITO_USER_POOL_CLIENT_ID
+  const userPoolId = process.env.COGNITO_USER_POOL_ID
+  const clientId = process.env.WEB_COGNITO_USER_POOL_CLIENT_ID
 
-//   const signUpResp = await cognito.signUp({
-//     ClientId: clientId,
-//     Username: email,
-//     Password: password,
-//     UserAttributes: [
-//       { Name: 'name', Value: name }
-//     ]
-//   }).promise()
+  const signUpResp = await cognito.signUp({
+    ClientId: clientId,
+    Username: email,
+    Password: password,
+    UserAttributes: [
+      { Name: 'name', Value: name }
+    ]
+  }).promise()
 
-//   const username = signUpResp.UserSub
-//   console.log(`[${email}] - user has signed up [${username}]`)
+  const username = signUpResp.UserSub
+  console.log(`[${email}] - user has signed up [${username}]`)
 
-//   await cognito.adminConfirmSignUp({
-//     UserPoolId: userPoolId,
-//     Username: username
-//   }).promise()
+  await cognito.adminConfirmSignUp({
+    UserPoolId: userPoolId,
+    Username: username
+  }).promise()
 
-//   console.log(`[${email}] - confirmed sign up`)
+  console.log(`[${email}] - confirmed sign up`)
 
-//   const auth = await cognito.initiateAuth({
-//     AuthFlow: 'USER_PASSWORD_AUTH',
-//     ClientId: clientId,
-//     AuthParameters: {
-//       USERNAME: username,
-//       PASSWORD: password
-//     }
-//   }).promise()
+  const auth = await cognito.initiateAuth({
+    AuthFlow: 'USER_PASSWORD_AUTH',
+    ClientId: clientId,
+    AuthParameters: {
+      USERNAME: username,
+      PASSWORD: password
+    }
+  }).promise()
 
-//   console.log(`[${email}] - signed in`)
+  console.log(`[${email}] - signed in`)
 
-//   return {
-//     username,
-//     name,
-//     email,
-//     idToken: auth.AuthenticationResult.IdToken,
-//     accessToken: auth.AuthenticationResult.AccessToken
-//   }
-// }
+  return {
+    username,
+    name,
+    email,
+    idToken: auth.AuthenticationResult.IdToken,
+    accessToken: auth.AuthenticationResult.AccessToken
+  }
+}
 
 // const a_user_follows_another = async (userId, otherUserId) => {
 //   await DocumentClient.put({
@@ -102,6 +102,6 @@ const an_appsync_context = (identity, args, result, source, info, prev) => {
 module.exports = {
   a_random_user,
   an_appsync_context,
-  // an_authenticated_user,
+  an_authenticated_user,
   // a_user_follows_another,
 }

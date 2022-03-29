@@ -3,7 +3,7 @@ const AWS = require('aws-sdk')
 const fs = require('fs')
 const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper')
 const velocityTemplate = require('amplify-velocity-template')
-// const { GraphQL, registerFragment } = require('../lib/graphql')
+const { GraphQL } = require('../lib/graphql')
 
 const myProfileFragment = `
 fragment myProfileFields on MyProfile {
@@ -20,7 +20,7 @@ fragment myProfileFields on MyProfile {
   followersCount
   followingCount
   tweetsCount
-  likesCounts
+  likesCount
 }
 `
 
@@ -39,7 +39,7 @@ fragment otherProfileFields on OtherProfile {
   followersCount
   followingCount
   tweetsCount
-  likesCounts
+  likesCount
   following
   followedBy
 }
@@ -353,94 +353,100 @@ const we_invoke_an_appsync_template = (templatePath, context) => {
   return JSON.parse(compiler.render(context))
 }
 
-// const a_user_calls_getMyProfile = async (user) => {
-//   const getMyProfile = `query getMyProfile {
-//     getMyProfile {
-//       ... myProfileFields
+const a_user_calls_getMyProfile = async (user) => {
+  const getMyProfile = `query getMyProfile {
+    getMyProfile {
+      id
+      name
+      screenName
+      imageUrl
+      backgroundImageUrl
+      bio
+      location
+      website
+      birthdate
+      createdAt
+      followersCount
+      followingCount
+      tweetsCount
+      likesCount
+    }
+  }`
 
-//       tweets {
-//         nextToken
-//         tweets {
-//           ... iTweetFields
-//         }
-//       }
-//     }
-//   }`
+  const data = await GraphQL(process.env.API_URL, getMyProfile, {}, user.accessToken)
+  const profile = data.getMyProfile
 
-//   const data = await GraphQL(process.env.API_URL, getMyProfile, {}, user.accessToken)
-//   const profile = data.getMyProfile
+  console.log(`[${user.username}] - fetched profile`)
 
-//   console.log(`[${user.username}] - fetched profile`)
+  return profile
+}
 
-//   return profile
-// }
+const a_user_calls_getProfile = async (user, screenName) => {
+  const getProfile = `query getProfile($screenName: String!) {
+    getProfile(screenName: $screenName) {
+      ... otherProfileFields
 
-// const a_user_calls_getProfile = async (user, screenName) => {
-//   const getProfile = `query getProfile($screenName: String!) {
-//     getProfile(screenName: $screenName) {
-//       ... otherProfileFields
+      tweets {
+        nextToken
+        tweets {
+          ... iTweetFields
+        }
+      }
+    }
+  }`
+  const variables = {
+    screenName
+  }
 
-//       tweets {
-//         nextToken
-//         tweets {
-//           ... iTweetFields
-//         }
-//       }
-//     }
-//   }`
-//   const variables = {
-//     screenName
-//   }
+  const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
+  const profile = data.getProfile
 
-//   const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
-//   const profile = data.getProfile
+  console.log(`[${user.username}] - fetched profile for [${screenName}]`)
 
-//   console.log(`[${user.username}] - fetched profile for [${screenName}]`)
+  return profile
+}
 
-//   return profile
-// }
+const a_user_calls_editMyProfile = async (user, input) => {
+  const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
+    editMyProfile(newProfile: $input) {
+      ... myProfileFields
 
-// const a_user_calls_editMyProfile = async (user, input) => {
-//   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
-//     editMyProfile(newProfile: $input) {
-//       ... myProfileFields
+      tweets {
+        nextToken
+        tweets {
+          ... iTweetFields
+        }
+      }
+    }
+  }`
+  const variables = {
+    input
+  }
 
-//       tweets {
-//         nextToken
-//         tweets {
-//           ... iTweetFields
-//         }
-//       }
-//     }
-//   }`
-//   const variables = {
-//     input
-//   }
+  const data = await GraphQL(process.env.API_URL, editMyProfile, variables, user.accessToken)
+  const profile = data.editMyProfile
 
-//   const data = await GraphQL(process.env.API_URL, editMyProfile, variables, user.accessToken)
-//   const profile = data.editMyProfile
+  console.log(`[${user.username}] - edited profile`)
 
-//   console.log(`[${user.username}] - edited profile`)
+  return profile
+}
 
-//   return profile
-// }
+const a_user_calls_getImageUploadUrl = async (user, extension, contentType) => {
+  const getImageUploadUrl = `query getImageUploadUrl($extension: String, $contentType: String) {
+    getImageUploadUrl(extension: $extension, contentType: $contentType)
+  }`
+  const variables = {
+    extension,
+    contentType
+  }
 
-// const a_user_calls_getImageUploadUrl = async (user, extension, contentType) => {
-//   const getImageUploadUrl = `query getImageUploadUrl($extension: String, $contentType: String) {
-//     getImageUploadUrl(extension: $extension, contentType: $contentType)
-//   }`
-//   const variables = {
-//     extension,
-//     contentType
-//   }
+  const data = await GraphQL(process.env.API_URL, getImageUploadUrl, variables, user.accessToken)
+  const url = data.getImageUploadUrl
 
-//   const data = await GraphQL(process.env.API_URL, getImageUploadUrl, variables, user.accessToken)
-//   const url = data.getImageUploadUrl
+  console.log(`[${user.username}] - got image upload url`)
 
-//   console.log(`[${user.username}] - got image upload url`)
-
-//   return url
-// }
+  return url
+}
 
 // const a_user_calls_tweet = async (user, text) => {
 //   const tweet = `mutation tweet($text: String!) {
@@ -845,9 +851,9 @@ module.exports = {
   // we_invoke_sendDirectMessage,
   a_user_signs_up,
   we_invoke_an_appsync_template,
-  // a_user_calls_getMyProfile,
-  // a_user_calls_getProfile,
-  // a_user_calls_editMyProfile,
+  a_user_calls_getMyProfile,
+  a_user_calls_getProfile,
+  a_user_calls_editMyProfile,
   // a_user_calls_getImageUploadUrl,
   // a_user_calls_tweet,
   // a_user_calls_getTweets,
