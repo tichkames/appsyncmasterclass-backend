@@ -2,7 +2,7 @@ require('dotenv').config()
 const AWS = require('aws-sdk')
 const DocumentClient = new AWS.DynamoDB.DocumentClient()
 const chance = require('chance').Chance()
-// const velocityUtil = require('amplify-appsync-simulator/lib/velocity/util')
+const velocityUtil = require('amplify-appsync-simulator/lib/velocity/util')
 
 // const { RELATIONSHIPS_TABLE } = process.env
 
@@ -21,24 +21,24 @@ const a_random_user = () => {
   }
 }
 
-// const an_appsync_context = (identity, args, result, source, info, prev) => {
-//   const util = velocityUtil.create([], new Date(), Object())
-//   const context = {
-//     identity,
-//     args,
-//     arguments: args,
-//     result,
-//     source,
-//     info,
-//     prev
-//   }
-//   return {
-//     context,
-//     ctx: context,
-//     util,
-//     utils: util
-//   }
-// }
+const an_appsync_context = (identity, args, result, source, info, prev) => {
+  const util = velocityUtil.create([], new Date(), Object())
+  const context = {
+    identity,
+    args,
+    arguments: args,
+    result,
+    source,
+    info,
+    prev
+  }
+  return {
+    context,
+    ctx: context,
+    util,
+    utils: util
+  }
+}
 
 // const an_authenticated_user = async () => {
 //   const { name, email, password } = a_random_user()
@@ -101,7 +101,7 @@ const a_random_user = () => {
 
 module.exports = {
   a_random_user,
-  // an_appsync_context,
+  an_appsync_context,
   // an_authenticated_user,
   // a_user_follows_another,
 }
