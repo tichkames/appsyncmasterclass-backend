@@ -409,14 +409,20 @@ const a_user_calls_getProfile = async (user, screenName) => {
 const a_user_calls_editMyProfile = async (user, input) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
     editMyProfile(newProfile: $input) {
-      ... myProfileFields
-
-      tweets {
-        nextToken
-        tweets {
-          ... iTweetFields
-        }
-      }
+      id
+      name
+      screenName
+      imageUrl
+      backgroundImageUrl
+      bio
+      location
+      website
+      birthdate
+      createdAt
+      followersCount
+      followingCount
+      tweetsCount
+      likesCount
     }
   }`
   const variables = {
