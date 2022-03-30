@@ -198,22 +198,22 @@ const we_invoke_confirmUserSignup = async (username, name, email) => {
   await handler(event, context)
 }
 
-// const we_invoke_getImageUploadUrl = async (username, extension, contentType) => {
-//   const handler = require('../../functions/get-upload-url').handler
+const we_invoke_getImageUploadUrl = async (username, extension, contentType) => {
+  const handler = require('../../functions/get-upload-url').handler
 
-//   const context = {}
-//   const event = {
-//     identity: {
-//       username
-//     },
-//     arguments: {
-//       extension,
-//       contentType
-//     }
-//   }
+  const context = {}
+  const event = {
+    identity: {
+      username
+    },
+    arguments: {
+      extension,
+      contentType
+    }
+  }
 
-//   return await handler(event, context)
-// }
+  return await handler(event, context)
+}
 
 // const we_invoke_tweet = async (username, text) => {
 //   const handler = require('../../functions/tweet').handler
@@ -847,7 +847,7 @@ const a_user_calls_getImageUploadUrl = async (user, extension, contentType) => {
 
 module.exports = {
   we_invoke_confirmUserSignup,
-  // we_invoke_getImageUploadUrl,
+  we_invoke_getImageUploadUrl,
   // we_invoke_tweet,
   // we_invoke_retweet,
   // we_invoke_unretweet,
@@ -860,7 +860,7 @@ module.exports = {
   a_user_calls_getMyProfile,
   a_user_calls_getProfile,
   a_user_calls_editMyProfile,
-  // a_user_calls_getImageUploadUrl,
+  a_user_calls_getImageUploadUrl,
   // a_user_calls_tweet,
   // a_user_calls_getTweets,
   // a_user_calls_getMyTimeline,

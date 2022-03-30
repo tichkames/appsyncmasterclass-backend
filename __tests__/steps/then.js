@@ -1,7 +1,7 @@
 require('dotenv').config()
-// const _ = require('lodash')
+const _ = require('lodash')
 const AWS = require('aws-sdk')
-// const http = require('axios')
+const http = require('axios')
 const fs = require('fs')
 
 const user_exists_in_UsersTable = async (id) => {
@@ -237,27 +237,27 @@ const user_exists_in_UsersTable = async (id) => {
 //   return resp.Item
 // }
 
-// const user_can_upload_image_to_url = async (url, filepath, contentType) => {
-//   const data = fs.readFileSync(filepath)
-//   await http({
-//     method: 'put',
-//     url,
-//     headers: {
-//       'Content-Type': contentType
-//     },
-//     data
-//   })
+const user_can_upload_image_to_url = async (url, filepath, contentType) => {
+  const data = fs.readFileSync(filepath)
+  await http({
+    method: 'put',
+    url,
+    headers: {
+      'Content-Type': contentType
+    },
+    data
+  })
 
-//   console.log('uploaded image to', url)
-// }
+  console.log('uploaded image to', url)
+}
 
-// const user_can_download_image_from = async (url) => {
-//   const resp = await http(url)
+const user_can_download_image_from = async (url) => {
+  const resp = await http(url)
 
-//   console.log('downloaded image from', url)
+  console.log('downloaded image from', url)
 
-//   return resp.data
-// }
+  return resp.data
+}
 
 module.exports = {
   user_exists_in_UsersTable,
@@ -273,6 +273,6 @@ module.exports = {
 //   there_are_N_tweets_in_TimelinesTable,
 //   there_are_N_messages_in_DirectMessagesTable,
 //   conversation_exists_in_ConversationsTable,
-//   user_can_upload_image_to_url,
-//   user_can_download_image_from
+  user_can_upload_image_to_url,
+  user_can_download_image_from
 }
