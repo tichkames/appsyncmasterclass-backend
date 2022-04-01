@@ -3,7 +3,7 @@ const AWS = require('aws-sdk')
 const fs = require('fs')
 const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper')
 const velocityTemplate = require('amplify-velocity-template')
-const { GraphQL } = require('../lib/graphql')
+const { GraphQL, registerFragment } = require('../lib/graphql')
 
 const myProfileFragment = `
 fragment myProfileFields on MyProfile {
@@ -165,7 +165,7 @@ fragment messageFields on Message {
 // registerFragment('myProfileFields', myProfileFragment)
 // registerFragment('otherProfileFields', otherProfileFragment)
 // registerFragment('iProfileFields', iProfileFragment)
-// registerFragment('tweetFields', tweetFragment)
+registerFragment('tweetFields', tweetFragment)
 // registerFragment('retweetFields', retweetFragment)
 // registerFragment('replyFields', replyFragment)
 // registerFragment('iTweetFields', iTweetFragment)
@@ -215,21 +215,21 @@ const we_invoke_getImageUploadUrl = async (username, extension, contentType) => 
   return await handler(event, context)
 }
 
-// const we_invoke_tweet = async (username, text) => {
-//   const handler = require('../../functions/tweet').handler
+const we_invoke_tweet = async (username, text) => {
+  const handler = require('../../functions/tweet').handler
 
-//   const context = {}
-//   const event = {
-//     identity: {
-//       username
-//     },
-//     arguments: {
-//       text
-//     }
-//   }
+  const context = {}
+  const event = {
+    identity: {
+      username
+    },
+    arguments: {
+      text
+    }
+  }
 
-//   return await handler(event, context)
-// }
+  return await handler(event, context)
+}
 
 // const we_invoke_retweet = async (username, tweetId) => {
 //   const handler = require('../../functions/retweet').handler
@@ -454,23 +454,28 @@ const a_user_calls_getImageUploadUrl = async (user, extension, contentType) => {
   return url
 }
 
-// const a_user_calls_tweet = async (user, text) => {
-//   const tweet = `mutation tweet($text: String!) {
-//     tweet(text: $text) {
-//       ... tweetFields
-//     }
-//   }`
-//   const variables = {
-//     text
-//   }
+const a_user_calls_tweet = async (user, text) => {
+  const tweet = `mutation tweet($text: String!) {
+    tweet(text: $text) {
+      id
+      createdAt
+      text
+      replies
+      likes
+      retweets
+    }
+  }`
+  const variables = {
+    text
+  }
 
-//   const data = await GraphQL(process.env.API_URL, tweet, variables, user.accessToken)
-//   const newTweet = data.tweet
+  const data = await GraphQL(process.env.API_URL, tweet, variables, user.accessToken)
+  const newTweet = data.tweet
 
-//   console.log(`[${user.username}] - posted new tweet`)
+  console.log(`[${user.username}] - posted new tweet`)
 
-//   return newTweet
-// }
+  return newTweet
+}
 
 // const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
 //   const getTweets = `query getTweets($userId: ID!, $limit: Int!, $nextToken: String) {
@@ -848,7 +853,7 @@ const a_user_calls_getImageUploadUrl = async (user, extension, contentType) => {
 module.exports = {
   we_invoke_confirmUserSignup,
   we_invoke_getImageUploadUrl,
-  // we_invoke_tweet,
+  we_invoke_tweet,
   // we_invoke_retweet,
   // we_invoke_unretweet,
   // we_invoke_reply,
@@ -861,7 +866,7 @@ module.exports = {
   a_user_calls_getProfile,
   a_user_calls_editMyProfile,
   a_user_calls_getImageUploadUrl,
-  // a_user_calls_tweet,
+  a_user_calls_tweet,
   // a_user_calls_getTweets,
   // a_user_calls_getMyTimeline,
   // a_user_calls_like,
