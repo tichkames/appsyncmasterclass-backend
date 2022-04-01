@@ -25,6 +25,10 @@ mappingTemplates:
     request: false
     response: false
 
+  - type: Query
+    field: getTweets
+    dataSource: tweetsTable
+
   - type: Mutation
     field: editMyProfile
     dataSource: usersTable
@@ -35,6 +39,18 @@ mappingTemplates:
     request: false
     response: false
 
+  # NESTED FIELDS
+  - type: Tweet
+    field: profile
+    dataSource: usersTable
+    request: Tweet.profile.request.vtl
+    response: Tweet.profile.response.vtl
+    # caching:
+    #   keys:
+    #     - $context.identity.username
+    #     - $context.source.creator
+    #   ttl: 300
+
 dataSources:
   - type: NONE
     name: none
@@ -43,6 +59,11 @@ dataSources:
     name: usersTable
     config:
       tableName: !Ref UsersTable
+
+  - type: AMAZON_DYNAMODB
+    name: tweetsTable
+    config:
+      tableName: !Ref TweetsTable
 
   - type: AWS_LAMBDA
     name: getImageUploadUrlFunction

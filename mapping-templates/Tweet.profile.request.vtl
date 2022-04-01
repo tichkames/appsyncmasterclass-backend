@@ -1,0 +1,15 @@
+#if ($util.isNull($context.result))
+  #if ($context.result.id == $context.identity.username)
+    #set ($context.result["__typename"] = "MyProfile")
+  #else
+    #set ($context.result["__typename"] = "OtherProfile")
+  #end
+#end
+
+{
+  "version" : "2018-05-29",
+  "operation" : "GetItem",
+  "key" : {
+    "id" : $util.dynamodb.toDynamoDBJson($context.source.creator)
+  }
+}
