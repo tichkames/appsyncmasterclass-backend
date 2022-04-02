@@ -381,30 +381,30 @@ const a_user_calls_getMyProfile = async (user) => {
   return profile
 }
 
-const a_user_calls_getProfile = async (user, screenName) => {
-  const getProfile = `query getProfile($screenName: String!) {
-    getProfile(screenName: $screenName) {
-      ... otherProfileFields
+// const a_user_calls_getProfile = async (user, screenName) => {
+//   const getProfile = `query getProfile($screenName: String!) {
+//     getProfile(screenName: $screenName) {
+//       ... otherProfileFields
 
-      tweets {
-        nextToken
-        tweets {
-          ... iTweetFields
-        }
-      }
-    }
-  }`
-  const variables = {
-    screenName
-  }
+//       tweets {
+//         nextToken
+//         tweets {
+//           ... iTweetFields
+//         }
+//       }
+//     }
+//   }`
+//   const variables = {
+//     screenName
+//   }
 
-  const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
-  const profile = data.getProfile
+//   const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
+//   const profile = data.getProfile
 
-  console.log(`[${user.username}] - fetched profile for [${screenName}]`)
+//   console.log(`[${user.username}] - fetched profile for [${screenName}]`)
 
-  return profile
-}
+//   return profile
+// }
 
 const a_user_calls_editMyProfile = async (user, input) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
@@ -458,6 +458,11 @@ const a_user_calls_tweet = async (user, text) => {
   const tweet = `mutation tweet($text: String!) {
     tweet(text: $text) {
       id
+      profile {
+        id
+        name
+        screenName
+      }
       createdAt
       text
       replies
@@ -477,28 +482,41 @@ const a_user_calls_tweet = async (user, text) => {
   return newTweet
 }
 
-// const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
-//   const getTweets = `query getTweets($userId: ID!, $limit: Int!, $nextToken: String) {
-//     getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
-//       nextToken
-//       tweets {
-//         ... iTweetFields
-//       }
-//     }
-//   }`
-//   const variables = {
-//     userId,
-//     limit,
-//     nextToken
-//   }
+const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
+  const getTweets = `query getTweets($userId: ID!, $limit: Int!, $nextToken: String) {
+    getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
+      nextToken
+      tweets {
+        id
+        createdAt
+        profile {
+          id
+          name
+          screenName
+        }
 
-//   const data = await GraphQL(process.env.API_URL, getTweets, variables, user.accessToken)
-//   const result = data.getTweets
+        ... on Tweet {
+          text
+          replies
+          likes
+          retweets
+        }
+      }
+    }
+  }`
+  const variables = {
+    userId,
+    limit,
+    nextToken
+  }
 
-//   console.log(`[${user.username}] - posted new tweet`)
+  const data = await GraphQL(process.env.API_URL, getTweets, variables, user.accessToken)
+  const result = data.getTweets
 
-//   return result
-// }
+  console.log(`[${user.username}] - posted new tweet`)
+
+  return result
+}
 
 // const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
 //   const getMyTimeline = `query getMyTimeline($limit: Int!, $nextToken: String) {
@@ -863,11 +881,11 @@ module.exports = {
   a_user_signs_up,
   we_invoke_an_appsync_template,
   a_user_calls_getMyProfile,
-  a_user_calls_getProfile,
+  // a_user_calls_getProfile,
   a_user_calls_editMyProfile,
   a_user_calls_getImageUploadUrl,
   a_user_calls_tweet,
-  // a_user_calls_getTweets,
+  a_user_calls_getTweets,
   // a_user_calls_getMyTimeline,
   // a_user_calls_like,
   // a_user_calls_unlike,
