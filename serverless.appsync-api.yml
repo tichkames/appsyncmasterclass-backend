@@ -43,6 +43,10 @@ mappingTemplates:
     request: false
     response: false
 
+  - type: Mutation
+    field: like
+    dataSource: likeMutation
+
   # NESTED FIELDS
   - type: Tweet
     field: profile
@@ -54,6 +58,10 @@ mappingTemplates:
     #     - $context.identity.username
     #     - $context.source.creator
     #   ttl: 300
+
+  - type: Tweet
+    field: liked
+    dataSource: likesTable
 
   - type: TimelinePage
     field: tweets
@@ -80,6 +88,25 @@ dataSources:
     config:
       tableName: !Ref TimelinesTable
 
+  - type: AMAZON_DYNAMODB
+    name: likesTable
+    config:
+      tableName: !Ref LikesTable
+
+  - type: AMAZON_DYNAMODB
+    name: likeMutation
+    config:
+      tableName: !Ref LikesTable
+      iamRoleStatements:
+        - Effect: Allow
+          Action: dynamodb:PutItem
+          Resource: !GetAtt LikesTable.Arn
+        - Effect: Allow
+          Action: dynamodb:UpdateItem
+          Resource:
+            - !GetAtt UsersTable.Arn
+            - !GetAtt TweetsTable.Arn
+
   - type: AWS_LAMBDA
     name: getImageUploadUrlFunction
     config:
@@ -92,8 +119,8 @@ dataSources:
 
 substitutions:
   TweetsTable: !Ref TweetsTable
-  # LikesTable: !Ref LikesTable
-  # UsersTable: !Ref UsersTable
+  LikesTable: !Ref LikesTable
+  UsersTable: !Ref UsersTable
   # RelationshipsTable: !Ref RelationshipsTable
   # FirehoseStreamName: !Ref FirehoseStream
   # IdentityPoolId: !Ref IdentityPool
