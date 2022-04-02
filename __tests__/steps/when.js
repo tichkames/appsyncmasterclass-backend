@@ -518,27 +518,40 @@ const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
   return result
 }
 
-// const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
-//   const getMyTimeline = `query getMyTimeline($limit: Int!, $nextToken: String) {
-//     getMyTimeline(limit: $limit, nextToken: $nextToken) {
-//       nextToken
-//       tweets {
-//         ... iTweetFields
-//       }
-//     }
-//   }`
-//   const variables = {
-//     limit,
-//     nextToken
-//   }
+const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
+  const getMyTimeline = `query getMyTimeline($limit: Int!, $nextToken: String) {
+    getMyTimeline(limit: $limit, nextToken: $nextToken) {
+      nextToken
+      tweets {
+        id
+        createdAt
+        profile {
+          id
+          name
+          screenName
+        }
 
-//   const data = await GraphQL(process.env.API_URL, getMyTimeline, variables, user.accessToken)
-//   const result = data.getMyTimeline
+        ... on Tweet {
+          text
+          replies
+          likes
+          retweets
+        }
+      }
+    }
+  }`
+  const variables = {
+    limit,
+    nextToken
+  }
 
-//   console.log(`[${user.username}] - fetched timeline`)
+  const data = await GraphQL(process.env.API_URL, getMyTimeline, variables, user.accessToken)
+  const result = data.getMyTimeline
 
-//   return result
-// }
+  console.log(`[${user.username}] - fetched timeline`)
+
+  return result
+}
 
 // const a_user_calls_like = async (user, tweetId) => {
 //   const like = `mutation like($tweetId: ID!) {
@@ -886,7 +899,7 @@ module.exports = {
   a_user_calls_getImageUploadUrl,
   a_user_calls_tweet,
   a_user_calls_getTweets,
-  // a_user_calls_getMyTimeline,
+  a_user_calls_getMyTimeline,
   // a_user_calls_like,
   // a_user_calls_unlike,
   // a_user_calls_getLikes,

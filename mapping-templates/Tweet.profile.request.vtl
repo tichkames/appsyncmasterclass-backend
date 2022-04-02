@@ -1,9 +1,13 @@
-#if ($util.isNull($context.result))
-  #if ($context.result.id == $context.identity.username)
-    #set ($context.result["__typename"] = "MyProfile")
+#if ($context.info.selectionSetList.size() == 1 && $context.info.selectionSetList[0] == "id")
+  #set ($result = { "id": "$context.source.creator" })
+
+  #if ($context.source.creator == $context.identity.username)
+    #set ($result["__typename"] = "MyProfile")
   #else
-    #set ($context.result["__typename"] = "OtherProfile")
+    #set ($result["__typename"] = "OtherProfile")
   #end
+
+  #return($result)
 #end
 
 {
