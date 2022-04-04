@@ -40,8 +40,6 @@ fragment otherProfileFields on OtherProfile {
   followingCount
   tweetsCount
   likesCount
-  following
-  followedBy
 }
 `
 
@@ -68,7 +66,6 @@ fragment tweetFields on Tweet {
   replies
   likes
   retweets
-  retweeted
   liked
 }
 `
@@ -129,14 +126,6 @@ fragment iTweetFields on ITweet {
   ... on Tweet {
     ... tweetFields
   }
-
-  ... on Retweet {
-    ... retweetFields
-  }
-
-  ... on Reply {
-    ... replyFields
-  }
 }
 `
 
@@ -162,13 +151,13 @@ fragment messageFields on Message {
 }
 `
 
-// registerFragment('myProfileFields', myProfileFragment)
-// registerFragment('otherProfileFields', otherProfileFragment)
-// registerFragment('iProfileFields', iProfileFragment)
+registerFragment('myProfileFields', myProfileFragment)
+registerFragment('otherProfileFields', otherProfileFragment)
+registerFragment('iProfileFields', iProfileFragment)
 registerFragment('tweetFields', tweetFragment)
 // registerFragment('retweetFields', retweetFragment)
 // registerFragment('replyFields', replyFragment)
-// registerFragment('iTweetFields', iTweetFragment)
+registerFragment('iTweetFields', iTweetFragment)
 // registerFragment('conversationFields', conversationFragment)
 // registerFragment('messageFields', messageFragment)
 
@@ -356,20 +345,7 @@ const we_invoke_an_appsync_template = (templatePath, context) => {
 const a_user_calls_getMyProfile = async (user) => {
   const getMyProfile = `query getMyProfile {
     getMyProfile {
-      id
-      name
-      screenName
-      imageUrl
-      backgroundImageUrl
-      bio
-      location
-      website
-      birthdate
-      createdAt
-      followersCount
-      followingCount
-      tweetsCount
-      likesCount
+      ... myProfileFields
     }
   }`
 
@@ -409,20 +385,7 @@ const a_user_calls_getMyProfile = async (user) => {
 const a_user_calls_editMyProfile = async (user, input) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
     editMyProfile(newProfile: $input) {
-      id
-      name
-      screenName
-      imageUrl
-      backgroundImageUrl
-      bio
-      location
-      website
-      birthdate
-      createdAt
-      followersCount
-      followingCount
-      tweetsCount
-      likesCount
+      ... myProfileFields
     }
   }`
   const variables = {
@@ -457,18 +420,7 @@ const a_user_calls_getImageUploadUrl = async (user, extension, contentType) => {
 const a_user_calls_tweet = async (user, text) => {
   const tweet = `mutation tweet($text: String!) {
     tweet(text: $text) {
-      id
-      profile {
-        id
-        name
-        screenName
-      }
-      createdAt
-      text
-      replies
-      likes
-      retweets
-      liked
+      ... tweetFields
     }
   }`
   const variables = {
@@ -488,21 +440,7 @@ const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
     getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
       nextToken
       tweets {
-        id
-        createdAt
-        profile {
-          id
-          name
-          screenName
-        }
-
-        ... on Tweet {
-          text
-          replies
-          likes
-          retweets
-          liked
-        }
+        ... iTweetFields
       }
     }
   }`
@@ -525,21 +463,7 @@ const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
     getMyTimeline(limit: $limit, nextToken: $nextToken) {
       nextToken
       tweets {
-        id
-        createdAt
-        profile {
-          id
-          name
-          screenName
-        }
-
-        ... on Tweet {
-          text
-          replies
-          likes
-          retweets
-          liked
-        }
+        ... iTweetFields
       }
     }
   }`
@@ -556,37 +480,37 @@ const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
   return result
 }
 
-// const a_user_calls_like = async (user, tweetId) => {
-//   const like = `mutation like($tweetId: ID!) {
-//     like(tweetId: $tweetId)
-//   }`
-//   const variables = {
-//     tweetId
-//   }
+const a_user_calls_like = async (user, tweetId) => {
+  const like = `mutation like($tweetId: ID!) {
+    like(tweetId: $tweetId)
+  }`
+  const variables = {
+    tweetId
+  }
 
-//   const data = await GraphQL(process.env.API_URL, like, variables, user.accessToken)
-//   const result = data.like
+  const data = await GraphQL(process.env.API_URL, like, variables, user.accessToken)
+  const result = data.like
 
-//   console.log(`[${user.username}] - liked tweet [${tweetId}]`)
+  console.log(`[${user.username}] - liked tweet [${tweetId}]`)
 
-//   return result
-// }
+  return result
+}
 
-// const a_user_calls_unlike = async (user, tweetId) => {
-//   const unlike = `mutation unlike($tweetId: ID!) {
-//     unlike(tweetId: $tweetId)
-//   }`
-//   const variables = {
-//     tweetId
-//   }
+const a_user_calls_unlike = async (user, tweetId) => {
+  const unlike = `mutation unlike($tweetId: ID!) {
+    unlike(tweetId: $tweetId)
+  }`
+  const variables = {
+    tweetId
+  }
 
-//   const data = await GraphQL(process.env.API_URL, unlike, variables, user.accessToken)
-//   const result = data.unlike
+  const data = await GraphQL(process.env.API_URL, unlike, variables, user.accessToken)
+  const result = data.unlike
 
-//   console.log(`[${user.username}] - unliked tweet [${tweetId}]`)
+  console.log(`[${user.username}] - unliked tweet [${tweetId}]`)
 
-//   return result
-// }
+  return result
+}
 
 // const a_user_calls_getLikes = async (user, userId, limit, nextToken) => {
 //   const getLikes = `query getLikes($userId: ID!, $limit: Int!, $nextToken: String) {
@@ -903,8 +827,8 @@ module.exports = {
   a_user_calls_tweet,
   a_user_calls_getTweets,
   a_user_calls_getMyTimeline,
-  // a_user_calls_like,
-  // a_user_calls_unlike,
+  a_user_calls_like,
+  a_user_calls_unlike,
   // a_user_calls_getLikes,
   // a_user_calls_retweet,
   // a_user_calls_unretweet,
