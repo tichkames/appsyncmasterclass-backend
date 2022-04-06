@@ -93,21 +93,21 @@ describe('Given an authenticated user', () => {
           })
       })
 
-      // it('Should see this tweet when he calls getLikes', async () => {
-      //   const { tweets, nextToken } = await when.a_user_calls_getLikes(userA, userA.username, 25)
+      it('Should see this tweet when he calls getLikes', async () => {
+        const { tweets, nextToken } = await when.a_user_calls_getLikes(userA, userA.username, 25)
 
-      //   expect(nextToken).toBeNull()
-      //   expect(tweets).toHaveLength(1)
-      //   expect(tweets[0]).toMatchObject({
-      //     ...tweet,
-      //     liked: true,
-      //     likes: 1,
-      //     profile: {
-      //       ...tweet.profile,
-      //       likesCounts: 1
-      //     }
-      //   })
-      // })
+        expect(nextToken).toBeNull()
+        expect(tweets).toHaveLength(1)
+        expect(tweets[0]).toMatchObject({
+          ...tweet,
+          liked: true,
+          likes: 1,
+          profile: {
+            ...tweet.profile,
+            likesCount: 1
+          }
+        })
+      })
 
       describe('When he unlikes the tweet', () => {
         beforeAll(async () => {
@@ -130,13 +130,13 @@ describe('Given an authenticated user', () => {
             })
         })
 
-      //   it('Should not see this tweet when he calls getLikes anymore', async () => {
-      //     const { tweets, nextToken } = await when.a_user_calls_getLikes(userA, userA.username, 25)
+        it('Should not see this tweet when he calls getLikes anymore', async () => {
+          const { tweets, nextToken } = await when.a_user_calls_getLikes(userA, userA.username, 25)
 
-      //     expect(nextToken).toBeNull()
-      //     expect(tweets).toHaveLength(0)
-      //   })
-      // })
+          expect(nextToken).toBeNull()
+          expect(tweets).toHaveLength(0)
+        })
+      })
     })
 
     // describe('When he retweets the tweet', () => {
@@ -294,4 +294,3 @@ describe('Given an authenticated user', () => {
     //   })
     })
   })
-})

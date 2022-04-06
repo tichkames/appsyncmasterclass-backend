@@ -33,6 +33,10 @@ mappingTemplates:
     field: getMyTimeline
     dataSource: timelinesTable
 
+  - type: Query
+    field: getLikes
+    dataSource: likesTable
+
   - type: Mutation
     field: editMyProfile
     dataSource: usersTable
@@ -67,11 +71,9 @@ mappingTemplates:
     field: liked
     dataSource: likesTable
 
-  - type: TimelinePage
+  - type: UnhydratedTweetsPage
     field: tweets
     dataSource: tweetsTable
-    request: TimelinePage.tweets.request.vtl
-    response: TimelinePage.tweets.response.vtl
 
 dataSources:
   - type: NONE
