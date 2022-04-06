@@ -16,7 +16,6 @@ mappingTemplates:
   #   dataSource: none
 
   # Queries
-
   - type: Query
     field: getMyProfile
     dataSource: usersTable
@@ -58,8 +57,25 @@ mappingTemplates:
     field: unlike
     dataSource: unlikeMutation
 
+  - type: Mutation
+    field: retweet
+    dataSource: retweetFunction
+    request: false
+    response: false
+
   # NESTED FIELDS
   - type: Tweet
+    field: profile
+    dataSource: usersTable
+    request: Tweet.profile.request.vtl
+    response: Tweet.profile.response.vtl
+    # caching:
+    #   keys:
+    #     - $context.identity.username
+    #     - $context.source.creator
+    #   ttl: 300
+
+  - type: Retweet
     field: profile
     dataSource: usersTable
     request: Tweet.profile.request.vtl
@@ -73,6 +89,10 @@ mappingTemplates:
   - type: Tweet
     field: liked
     dataSource: likesTable
+
+  - type: Retweet
+    field: retweetOf
+    dataSource: tweetsTable
 
   - type: UnhydratedTweetsPage
     field: tweets
@@ -149,6 +169,11 @@ dataSources:
     name: tweetFunction
     config:
       functionName: tweet
+
+  - type: AWS_LAMBDA
+    name: retweetFunction
+    config:
+      functionName: retweet
 
 substitutions:
   TweetsTable: !Ref TweetsTable

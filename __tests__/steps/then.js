@@ -75,27 +75,27 @@ const tweet_exists_in_TweetsTable = async (id) => {
 //   return reply
 // }
 
-// const retweet_exists_in_TweetsTable = async (userId, tweetId) => {
-//   const DynamoDB = new AWS.DynamoDB.DocumentClient()
+const retweet_exists_in_TweetsTable = async (userId, tweetId) => {
+  const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
-//   console.log(`looking for retweet of [${tweetId}] in table [${process.env.TWEETS_TABLE}]`)
-//   const resp = await DynamoDB.query({
-//     TableName: process.env.TWEETS_TABLE,
-//     IndexName: 'retweetsByCreator',
-//     KeyConditionExpression: 'creator = :creator AND retweetOf = :tweetId',
-//     ExpressionAttributeValues: {
-//       ':creator': userId,
-//       ':tweetId': tweetId
-//     },
-//     Limit: 1
-//   }).promise()
+  console.log(`looking for retweet of [${tweetId}] in table [${process.env.TWEETS_TABLE}]`)
+  const resp = await DynamoDB.query({
+    TableName: process.env.TWEETS_TABLE,
+    IndexName: 'retweetsByCreator',
+    KeyConditionExpression: 'creator = :creator AND retweetOf = :tweetId',
+    ExpressionAttributeValues: {
+      ':creator': userId,
+      ':tweetId': tweetId
+    },
+    Limit: 1
+  }).promise()
 
-//   const retweet = _.get(resp, 'Items.0')
+  const retweet = _.get(resp, 'Items.0')
 
-//   expect(retweet).toBeTruthy()
+  expect(retweet).toBeTruthy()
 
-//   return retweet
-// }
+  return retweet
+}
 
 // const retweet_does_not_exist_in_TweetsTable = async (userId, tweetId) => {
 //   const DynamoDB = new AWS.DynamoDB.DocumentClient()
@@ -117,22 +117,22 @@ const tweet_exists_in_TweetsTable = async (id) => {
 //   return null
 // }
 
-// const retweet_exists_in_RetweetsTable = async (userId, tweetId) => {
-//   const DynamoDB = new AWS.DynamoDB.DocumentClient()
+const retweet_exists_in_RetweetsTable = async (userId, tweetId) => {
+  const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
-//   console.log(`looking for retweet of [${tweetId}] for user [${userId}] in table [${process.env.RETWEETS_TABLE}]`)
-//   const resp = await DynamoDB.get({
-//     TableName: process.env.RETWEETS_TABLE,
-//     Key: {
-//       userId,
-//       tweetId
-//     }
-//   }).promise()
+  console.log(`looking for retweet of [${tweetId}] for user [${userId}] in table [${process.env.RETWEETS_TABLE}]`)
+  const resp = await DynamoDB.get({
+    TableName: process.env.RETWEETS_TABLE,
+    Key: {
+      userId,
+      tweetId
+    }
+  }).promise()
 
-//   expect(resp.Item).toBeTruthy()
+  expect(resp.Item).toBeTruthy()
 
-//   return resp.Item
-// }
+  return resp.Item
+}
 
 // const retweet_does_not_exist_in_RetweetsTable = async (userId, tweetId) => {
 //   const DynamoDB = new AWS.DynamoDB.DocumentClient()
@@ -185,23 +185,23 @@ const tweet_exists_in_TimelinesTable = async (userId, tweetId) => {
 //   return resp.Item
 // }
 
-// const there_are_N_tweets_in_TimelinesTable = async (userId, n) => {
-//   const DynamoDB = new AWS.DynamoDB.DocumentClient()
+const there_are_N_tweets_in_TimelinesTable = async (userId, n) => {
+  const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
-//   console.log(`looking for [${n}] tweets for user [${userId}] in table [${process.env.TIMELINES_TABLE}]`)
-//   const resp = await DynamoDB.query({
-//     TableName: process.env.TIMELINES_TABLE,
-//     KeyConditionExpression: 'userId = :userId',
-//     ExpressionAttributeValues: {
-//       ':userId': userId
-//     },
-//     ScanIndexForward: false
-//   }).promise()
+  console.log(`looking for [${n}] tweets for user [${userId}] in table [${process.env.TIMELINES_TABLE}]`)
+  const resp = await DynamoDB.query({
+    TableName: process.env.TIMELINES_TABLE,
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: {
+      ':userId': userId
+    },
+    ScanIndexForward: false
+  }).promise()
 
-//   expect(resp.Items).toHaveLength(n)
+  expect(resp.Items).toHaveLength(n)
 
-//   return resp.Items
-// }
+  return resp.Items
+}
 
 // const there_are_N_messages_in_DirectMessagesTable = async (conversationId, n) => {
 //   const DynamoDB = new AWS.DynamoDB.DocumentClient()
@@ -266,11 +266,11 @@ module.exports = {
   tweet_exists_in_TimelinesTable,
 //   tweet_does_not_exist_in_TimelinesTable,
 //   reply_exists_in_TweetsTable,
-//   retweet_exists_in_TweetsTable,
+  retweet_exists_in_TweetsTable,
 //   retweet_does_not_exist_in_TweetsTable,
-//   retweet_exists_in_RetweetsTable,
+  retweet_exists_in_RetweetsTable,
 //   retweet_does_not_exist_in_RetweetsTable,
-//   there_are_N_tweets_in_TimelinesTable,
+  there_are_N_tweets_in_TimelinesTable,
 //   there_are_N_messages_in_DirectMessagesTable,
 //   conversation_exists_in_ConversationsTable,
   user_can_upload_image_to_url,

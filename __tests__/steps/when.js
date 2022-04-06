@@ -220,21 +220,21 @@ const we_invoke_tweet = async (username, text) => {
   return await handler(event, context)
 }
 
-// const we_invoke_retweet = async (username, tweetId) => {
-//   const handler = require('../../functions/retweet').handler
+const we_invoke_retweet = async (username, tweetId) => {
+  const handler = require('../../functions/retweet').handler
 
-//   const context = {}
-//   const event = {
-//     identity: {
-//       username
-//     },
-//     arguments: {
-//       tweetId
-//     }
-//   }
+  const context = {}
+  const event = {
+    identity: {
+      username
+    },
+    arguments: {
+      tweetId
+    }
+  }
 
-//   return await handler(event, context)
-// }
+  return await handler(event, context)
+}
 
 // const we_invoke_unretweet = async (username, tweetId) => {
 //   const handler = require('../../functions/unretweet').handler
@@ -826,7 +826,7 @@ module.exports = {
   we_invoke_confirmUserSignup,
   we_invoke_getImageUploadUrl,
   we_invoke_tweet,
-  // we_invoke_retweet,
+  we_invoke_retweet,
   // we_invoke_unretweet,
   // we_invoke_reply,
   // we_invoke_distributeTweets,
