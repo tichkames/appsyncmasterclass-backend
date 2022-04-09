@@ -10,7 +10,7 @@ type Query {
 
     getMyProfile: MyProfile!
 
-    getProfile(screenName: String!): OtherProfile!
+    getProfile(screenName: String!): OtherProfile
 
     getTweets(userId: ID!, limit: Int!, nextToken: String): TweetsPage!
 
@@ -30,11 +30,11 @@ type Mutation {
 
     unlike(tweetId: ID!): Boolean!
 
-    retweet(tweetId: ID!): Boolean!
+    retweet(tweetId: ID!): Retweet!
 
     unretweet(tweetId: ID!): Boolean!
 
-    reply(tweetId: ID!, text: String): Reply!
+    reply(tweetId: ID!, text: String!): Reply!
 
     follow(userId: ID!): Boolean!
 
@@ -47,12 +47,13 @@ input ProfileInput {
     backgroundImageUrl: AWSURL
     bio: String
     location: String
+    website: AWSURL
     birthdate: AWSDate
 }
 
 interface IProfile {
     id: ID!
-    name: String
+    name: String!
     screenName: String!
     imageUrl: AWSURL
     backgroundImageUrl: AWSURL
@@ -70,7 +71,7 @@ interface IProfile {
 
 type MyProfile implements IProfile {
     id: ID!
-    name: String
+    name: String!
     screenName: String!
     imageUrl: AWSURL
     backgroundImageUrl: AWSURL
@@ -88,7 +89,7 @@ type MyProfile implements IProfile {
 
 type OtherProfile  implements IProfile {
     id: ID!
-    name: String
+    name: String!
     screenName: String!
     imageUrl: AWSURL
     backgroundImageUrl: AWSURL
@@ -140,7 +141,7 @@ type Reply implements ITweet {
 
 type Retweet implements ITweet {
     id: ID!
-    profile: IProfile!
+    profile: IProfile
     createdAt: AWSDateTime!
     retweetOf: ITweet!
 }
@@ -157,5 +158,5 @@ type UnhydratedTweetsPage {
 
 type ProfilesPage {
     profiles: [IProfile!]
-    nextToken: String!
+    nextToken: String
 }
