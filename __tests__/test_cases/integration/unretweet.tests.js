@@ -3,7 +3,7 @@ const when = require('../../steps/when')
 const then = require('../../steps/then')
 const chance = require('chance').Chance()
 
-jest.setTimeout(30000);
+jest.setTimeout(30000)
 describe("Given an authenticated user retweeted another user's tweet", () => {
   let userA, userB, tweet
   const text = chance.string({ length: 16 })

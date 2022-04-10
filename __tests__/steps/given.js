@@ -4,7 +4,7 @@ const DocumentClient = new AWS.DynamoDB.DocumentClient()
 const chance = require('chance').Chance()
 const velocityUtil = require('amplify-appsync-simulator/lib/velocity/util')
 
-// const { RELATIONSHIPS_TABLE } = process.env
+const { RELATIONSHIPS_TABLE } = process.env
 
 const a_random_user = () => {
   const firstName = chance.first({ nationality: 'en' })
@@ -87,21 +87,21 @@ const an_authenticated_user = async () => {
   }
 }
 
-// const a_user_follows_another = async (userId, otherUserId) => {
-//   await DocumentClient.put({
-//     TableName: RELATIONSHIPS_TABLE,
-//     Item: {
-//       userId,
-//       sk: `FOLLOWS_${otherUserId}`,
-//       otherUserId,
-//       createdAt: new Date().toJSON()
-//     }
-//   }).promise()
-// }
+const a_user_follows_another = async (userId, otherUserId) => {
+  await DocumentClient.put({
+    TableName: RELATIONSHIPS_TABLE,
+    Item: {
+      userId,
+      sk: `FOLLOWS_${otherUserId}`,
+      otherUserId,
+      createdAt: new Date().toJSON()
+    }
+  }).promise()
+}
 
 module.exports = {
   a_random_user,
   an_appsync_context,
   an_authenticated_user,
-  // a_user_follows_another,
+  a_user_follows_another,
 }

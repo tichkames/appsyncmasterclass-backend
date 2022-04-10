@@ -40,6 +40,8 @@ fragment otherProfileFields on OtherProfile {
   followingCount
   tweetsCount
   likesCount
+  following
+  followedBy
 }
 `
 
@@ -278,12 +280,12 @@ const we_invoke_reply = async (username, tweetId, text) => {
   return await handler(event, context)
 }
 
-// const we_invoke_distributeTweets = async (event) => {
-//   const handler = require('../../functions/distribute-tweets').handler
+const we_invoke_distributeTweets = async (event) => {
+  const handler = require('../../functions/distribute-tweets').handler
 
-//   const context = {}
-//   return await handler(event, context)
-// }
+  const context = {}
+  return await handler(event, context)
+}
 
 // const we_invoke_distributeTweetsToFollower = async (event) => {
 //   const handler = require('../../functions/distribute-tweets-to-follower').handler
@@ -373,30 +375,30 @@ const a_user_calls_getMyProfile = async (user) => {
   return profile
 }
 
-// const a_user_calls_getProfile = async (user, screenName) => {
-//   const getProfile = `query getProfile($screenName: String!) {
-//     getProfile(screenName: $screenName) {
-//       ... otherProfileFields
+const a_user_calls_getProfile = async (user, screenName) => {
+  const getProfile = `query getProfile($screenName: String!) {
+    getProfile(screenName: $screenName) {
+      ... otherProfileFields
 
-//       tweets {
-//         nextToken
-//         tweets {
-//           ... iTweetFields
-//         }
-//       }
-//     }
-//   }`
-//   const variables = {
-//     screenName
-//   }
+      tweets {
+        nextToken
+        tweets {
+          ... iTweetFields
+        }
+      }
+    }
+  }`
+  const variables = {
+    screenName
+  }
 
-//   const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
-//   const profile = data.getProfile
+  const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
+  const profile = data.getProfile
 
-//   console.log(`[${user.username}] - fetched profile for [${screenName}]`)
+  console.log(`[${user.username}] - fetched profile for [${screenName}]`)
 
-//   return profile
-// }
+  return profile
+}
 
 const a_user_calls_editMyProfile = async (user, input) => {
   const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
@@ -611,81 +613,81 @@ const a_user_calls_reply = async (user, tweetId, text) => {
   return result
 }
 
-// const a_user_calls_follow = async (user, userId) => {
-//   const follow = `mutation follow($userId: ID!) {
-//     follow(userId: $userId)
-//   }`
-//   const variables = {
-//     userId
-//   }
+const a_user_calls_follow = async (user, userId) => {
+  const follow = `mutation follow($userId: ID!) {
+    follow(userId: $userId)
+  }`
+  const variables = {
+    userId
+  }
 
-//   const data = await GraphQL(process.env.API_URL, follow, variables, user.accessToken)
-//   const result = data.follow
+  const data = await GraphQL(process.env.API_URL, follow, variables, user.accessToken)
+  const result = data.follow
 
-//   console.log(`[${user.username}] - followed [${userId}]`)
+  console.log(`[${user.username}] - followed [${userId}]`)
 
-//   return result
-// }
+  return result
+}
 
-// const a_user_calls_unfollow = async (user, userId) => {
-//   const unfollow = `mutation unfollow($userId: ID!) {
-//     unfollow(userId: $userId)
-//   }`
-//   const variables = {
-//     userId
-//   }
+const a_user_calls_unfollow = async (user, userId) => {
+  const unfollow = `mutation unfollow($userId: ID!) {
+    unfollow(userId: $userId)
+  }`
+  const variables = {
+    userId
+  }
 
-//   const data = await GraphQL(process.env.API_URL, unfollow, variables, user.accessToken)
-//   const result = data.unfollow
+  const data = await GraphQL(process.env.API_URL, unfollow, variables, user.accessToken)
+  const result = data.unfollow
 
-//   console.log(`[${user.username}] - unfollowed [${userId}]`)
+  console.log(`[${user.username}] - unfollowed [${userId}]`)
 
-//   return result
-// }
+  return result
+}
 
-// const a_user_calls_getFollowers = async (user, userId, limit, nextToken) => {
-//   const getFollowers = `query getFollowers($userId: ID!, $limit: Int!, $nextToken: String) {
-//     getFollowers(userId: $userId, limit: $limit, nextToken: $nextToken) {
-//       profiles {
-//         ... iProfileFields
-//       }
-//     }
-//   }`
-//   const variables = {
-//     userId,
-//     limit,
-//     nextToken
-//   }
+const a_user_calls_getFollowers = async (user, userId, limit, nextToken) => {
+  const getFollowers = `query getFollowers($userId: ID!, $limit: Int!, $nextToken: String) {
+    getFollowers(userId: $userId, limit: $limit, nextToken: $nextToken) {
+      profiles {
+        ... iProfileFields
+      }
+    }
+  }`
+  const variables = {
+    userId,
+    limit,
+    nextToken
+  }
 
-//   const data = await GraphQL(process.env.API_URL, getFollowers, variables, user.accessToken)
-//   const result = data.getFollowers
+  const data = await GraphQL(process.env.API_URL, getFollowers, variables, user.accessToken)
+  const result = data.getFollowers
 
-//   console.log(`[${user.username}] - fetched followers`)
+  console.log(`[${user.username}] - fetched followers`)
 
-//   return result
-// }
+  return result
+}
 
-// const a_user_calls_getFollowing = async (user, userId, limit, nextToken) => {
-//   const getFollowing = `query getFollowing($userId: ID!, $limit: Int!, $nextToken: String) {
-//     getFollowing(userId: $userId, limit: $limit, nextToken: $nextToken) {
-//       profiles {
-//         ... iProfileFields
-//       }
-//     }
-//   }`
-//   const variables = {
-//     userId,
-//     limit,
-//     nextToken
-//   }
+const a_user_calls_getFollowing = async (user, userId, limit, nextToken) => {
+  const getFollowing = `query getFollowing($userId: ID!, $limit: Int!, $nextToken: String) {
+    getFollowing(userId: $userId, limit: $limit, nextToken: $nextToken) {
+      profiles {
+        ... iProfileFields
+      }
+    }
+  }`
+  const variables = {
+    userId,
+    limit,
+    nextToken
+  }
 
-//   const data = await GraphQL(process.env.API_URL, getFollowing, variables, user.accessToken)
-//   const result = data.getFollowing
+  const data = await GraphQL(process.env.API_URL, getFollowing, variables, user.accessToken)
+  const result = data.getFollowing
 
-//   console.log(`[${user.username}] - fetched following`)
+  console.log(`[${user.username}] - fetched following`)
 
-//   return result
-// }
+  return result
+}
 
 // const a_user_calls_search = async (user, mode, query, limit, nextToken) => {
 //   const search = `query search($query: String!, $limit: Int!, $nextToken: String) {
@@ -838,13 +840,13 @@ module.exports = {
   we_invoke_retweet,
   we_invoke_unretweet,
   we_invoke_reply,
-  // we_invoke_distributeTweets,
+  we_invoke_distributeTweets,
   // we_invoke_distributeTweetsToFollower,
   // we_invoke_sendDirectMessage,
   a_user_signs_up,
   we_invoke_an_appsync_template,
   a_user_calls_getMyProfile,
-  // a_user_calls_getProfile,
+  a_user_calls_getProfile,
   a_user_calls_editMyProfile,
   a_user_calls_getImageUploadUrl,
   a_user_calls_tweet,
@@ -856,10 +858,10 @@ module.exports = {
   a_user_calls_retweet,
   a_user_calls_unretweet,
   a_user_calls_reply,
-  // a_user_calls_follow,
-  // a_user_calls_unfollow,
-  // a_user_calls_getFollowers,
-  // a_user_calls_getFollowing,
+  a_user_calls_follow,
+  a_user_calls_unfollow,
+  a_user_calls_getFollowers,
+  a_user_calls_getFollowing,
   // a_user_calls_search,
   // a_user_calls_getHashTag,
   // a_user_calls_sendDirectMessage,
