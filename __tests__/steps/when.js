@@ -82,6 +82,10 @@ fragment retweetFields on Retweet {
     ... on Tweet {
       ... tweetFields
     }
+
+    ... on Reply {
+      ... replyFields
+    }
   }
 }
 `
@@ -126,6 +130,10 @@ fragment iTweetFields on ITweet {
 
   ... on Retweet {
     ... retweetFields
+  }
+
+  ... on Reply {
+    ... replyFields
   }
 }
 `
@@ -237,38 +245,38 @@ const we_invoke_retweet = async (username, tweetId) => {
   return await handler(event, context)
 }
 
-// const we_invoke_unretweet = async (username, tweetId) => {
-//   const handler = require('../../functions/unretweet').handler
+const we_invoke_unretweet = async (username, tweetId) => {
+  const handler = require('../../functions/unretweet').handler
 
-//   const context = {}
-//   const event = {
-//     identity: {
-//       username
-//     },
-//     arguments: {
-//       tweetId
-//     }
-//   }
+  const context = {}
+  const event = {
+    identity: {
+      username
+    },
+    arguments: {
+      tweetId
+    }
+  }
 
-//   return await handler(event, context)
-// }
+  return await handler(event, context)
+}
 
-// const we_invoke_reply = async (username, tweetId, text) => {
-//   const handler = require('../../functions/reply').handler
+const we_invoke_reply = async (username, tweetId, text) => {
+  const handler = require('../../functions/reply').handler
 
-//   const context = {}
-//   const event = {
-//     identity: {
-//       username
-//     },
-//     arguments: {
-//       tweetId,
-//       text
-//     }
-//   }
+  const context = {}
+  const event = {
+    identity: {
+      username
+    },
+    arguments: {
+      tweetId,
+      text
+    }
+  }
 
-//   return await handler(event, context)
-// }
+  return await handler(event, context)
+}
 
 // const we_invoke_distributeTweets = async (event) => {
 //   const handler = require('../../functions/distribute-tweets').handler
@@ -568,40 +576,40 @@ const a_user_calls_retweet = async (user, tweetId) => {
   return result
 }
 
-// const a_user_calls_unretweet = async (user, tweetId) => {
-//   const unretweet = `mutation unretweet($tweetId: ID!) {
-//     unretweet(tweetId: $tweetId)
-//   }`
-//   const variables = {
-//     tweetId
-//   }
+const a_user_calls_unretweet = async (user, tweetId) => {
+  const unretweet = `mutation unretweet($tweetId: ID!) {
+    unretweet(tweetId: $tweetId)
+  }`
+  const variables = {
+    tweetId
+  }
 
-//   const data = await GraphQL(process.env.API_URL, unretweet, variables, user.accessToken)
-//   const result = data.unretweet
+  const data = await GraphQL(process.env.API_URL, unretweet, variables, user.accessToken)
+  const result = data.unretweet
 
-//   console.log(`[${user.username}] - unretweeted tweet [${tweetId}]`)
+  console.log(`[${user.username}] - unretweeted tweet [${tweetId}]`)
 
-//   return result
-// }
+  return result
+}
 
-// const a_user_calls_reply = async (user, tweetId, text) => {
-//   const reply = `mutation reply($tweetId: ID!, $text: String!) {
-//     reply(tweetId: $tweetId, text: $text) {
-//       ... replyFields
-//     }
-//   }`
-//   const variables = {
-//     tweetId,
-//     text
-//   }
+const a_user_calls_reply = async (user, tweetId, text) => {
+  const reply = `mutation reply($tweetId: ID!, $text: String!) {
+    reply(tweetId: $tweetId, text: $text) {
+      ... replyFields
+    }
+  }`
+  const variables = {
+    tweetId,
+    text
+  }
 
-//   const data = await GraphQL(process.env.API_URL, reply, variables, user.accessToken)
-//   const result = data.reply
+  const data = await GraphQL(process.env.API_URL, reply, variables, user.accessToken)
+  const result = data.reply
 
-//   console.log(`[${user.username}] - replied to tweet [${tweetId}]`)
+  console.log(`[${user.username}] - replied to tweet [${tweetId}]`)
 
-//   return result
-// }
+  return result
+}
 
 // const a_user_calls_follow = async (user, userId) => {
 //   const follow = `mutation follow($userId: ID!) {
@@ -828,8 +836,8 @@ module.exports = {
   we_invoke_getImageUploadUrl,
   we_invoke_tweet,
   we_invoke_retweet,
-  // we_invoke_unretweet,
-  // we_invoke_reply,
+  we_invoke_unretweet,
+  we_invoke_reply,
   // we_invoke_distributeTweets,
   // we_invoke_distributeTweetsToFollower,
   // we_invoke_sendDirectMessage,
@@ -846,8 +854,8 @@ module.exports = {
   a_user_calls_unlike,
   a_user_calls_getLikes,
   a_user_calls_retweet,
-  // a_user_calls_unretweet,
-  // a_user_calls_reply,
+  a_user_calls_unretweet,
+  a_user_calls_reply,
   // a_user_calls_follow,
   // a_user_calls_unfollow,
   // a_user_calls_getFollowers,

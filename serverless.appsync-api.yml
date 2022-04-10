@@ -63,6 +63,18 @@ mappingTemplates:
     request: false
     response: false
 
+  - type: Mutation
+    field: unretweet
+    dataSource: unretweetFunction
+    request: false
+    response: false
+
+  - type: Mutation
+    field: reply
+    dataSource: replyFunction
+    request: false
+    response: false
+
   # NESTED FIELDS
   - type: Tweet
     field: profile
@@ -86,6 +98,29 @@ mappingTemplates:
     #     - $context.source.creator
     #   ttl: 300
 
+  - type: Reply
+    field: profile
+    dataSource: usersTable
+    request: Tweet.profile.request.vtl
+    response: Tweet.profile.response.vtl
+    # caching:
+    #   keys:
+    #     - $context.identity.username
+    #     - $context.source.creator
+    #   ttl: 300
+
+  - type: Reply
+    field: liked
+    dataSource: likesTable
+    request: Tweet.liked.request.vtl
+    response: Tweet.liked.response.vtl
+
+  - type: Reply
+    field: retweeted
+    dataSource: retweetsTable
+    request: Tweet.retweeted.request.vtl
+    response: Tweet.retweeted.response.vtl
+
   - type: Tweet
     field: liked
     dataSource: likesTable
@@ -97,6 +132,19 @@ mappingTemplates:
   - type: Retweet
     field: retweetOf
     dataSource: tweetsTable
+
+  - type: Reply
+    field: inReplyToTweet
+    dataSource: tweetsTable
+
+  - type: Reply
+    field: inReplyToUsers
+    dataSource: usersTable
+    # caching:
+    #   keys:
+    #     - $context.identity.username
+    #     - $context.source.inReplyToUserIds
+    #   ttl: 300
 
   - type: UnhydratedTweetsPage
     field: tweets
@@ -112,6 +160,7 @@ mappingTemplates:
     request: MyProfile.tweets.request.vtl
     response: MyProfile.tweets.response.vtl
 
+# Database DataSources
 dataSources:
   - type: NONE
     name: none
@@ -169,6 +218,7 @@ dataSources:
             - !GetAtt UsersTable.Arn
             - !GetAtt TweetsTable.Arn
 
+# Lambda DataSources
   - type: AWS_LAMBDA
     name: getImageUploadUrlFunction
     config:
@@ -183,6 +233,16 @@ dataSources:
     name: retweetFunction
     config:
       functionName: retweet
+
+  - type: AWS_LAMBDA
+    name: unretweetFunction
+    config:
+      functionName: unretweet
+
+  - type: AWS_LAMBDA
+    name: replyFunction
+    config:
+      functionName: reply
 
 substitutions:
   TweetsTable: !Ref TweetsTable

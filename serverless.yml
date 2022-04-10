@@ -89,6 +89,53 @@ functions:
           - !GetAtt TimelinesTable.Arn
           - !GetAtt RetweetsTable.Arn
 
+  unretweet:
+    handler: functions/unretweet.handler
+    environment:
+      USERS_TABLE: !Ref UsersTable
+      TWEETS_TABLE: !Ref TweetsTable
+      TIMELINES_TABLE: !Ref TimelinesTable
+      RETWEETS_TABLE: !Ref RetweetsTable
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:GetItem
+        Resource: !GetAtt TweetsTable.Arn
+      - Effect: Allow
+        Action: dynamodb:Query
+        Resource: !Sub "${TweetsTable.Arn}/index/retweetsByCreator"
+      - Effect: Allow
+        Action: dynamodb:UpdateItem
+        Resource:
+          - !GetAtt TweetsTable.Arn
+          - !GetAtt UsersTable.Arn
+      - Effect: Allow
+        Action: dynamodb:DeleteItem
+        Resource:
+          - !GetAtt TweetsTable.Arn
+          - !GetAtt TimelinesTable.Arn
+          - !GetAtt RetweetsTable.Arn
+
+  reply:
+    handler: functions/reply.handler
+    environment:
+      USERS_TABLE: !Ref UsersTable
+      TWEETS_TABLE: !Ref TweetsTable
+      TIMELINES_TABLE: !Ref TimelinesTable
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:GetItem
+        Resource: !GetAtt TweetsTable.Arn
+      - Effect: Allow
+        Action: dynamodb:UpdateItem
+        Resource:
+          - !GetAtt TweetsTable.Arn
+          - !GetAtt UsersTable.Arn
+      - Effect: Allow
+        Action: dynamodb:PutItem
+        Resource:
+          - !GetAtt TweetsTable.Arn
+          - !GetAtt TimelinesTable.Arn
+
 resources:
   Resources:
     UsersTable:
@@ -132,6 +179,8 @@ resources:
             AttributeType: S
           - AttributeName: retweetOf
             AttributeType: S
+          - AttributeName: inReplyToTweetId
+            AttributeType: S
         GlobalSecondaryIndexes:
           - IndexName: byCreator
             KeySchema:
@@ -146,6 +195,14 @@ resources:
               - AttributeName: creator
                 KeyType: HASH
               - AttributeName: retweetOf
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: repliesForTweet
+            KeySchema:
+              - AttributeName: inReplyToTweetId
+                KeyType: HASH
+              - AttributeName: id
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
